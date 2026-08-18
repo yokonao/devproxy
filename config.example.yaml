@@ -1,0 +1,5 @@
+port: 3000
+root: http://127.0.0.1:8080
+routes:
+  api: http://127.0.0.1:8081
+  worker: unix:///tmp/devproxy-worker.sock
