@@ -123,7 +123,7 @@ func TestUnixProxy(t *testing.T) {
 
 	resp, err := http.Get(proxy.URL)
 	require.NoError(t, err)
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 	body, err := io.ReadAll(resp.Body)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)

@@ -1,4 +1,5 @@
 /config.yaml
 /devproxy
 /coverage.out
+/dist
 .DS_Store
