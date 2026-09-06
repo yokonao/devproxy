@@ -7,6 +7,20 @@
 - Go 1.26.6 or later
 - macOS or Linux for Unix socket targets
 
+## Installation
+
+Download a prebuilt binary from the [releases page](https://github.com/yokonao/devproxy/releases):
+
+```sh
+curl -L https://github.com/yokonao/devproxy/releases/latest/download/devproxy_$(uname -s | tr '[:upper:]' '[:lower:]')_$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/').tar.gz | tar xz
+```
+
+Or build from source with `go install`:
+
+```sh
+go install github.com/yokonao/devproxy@latest
+```
+
 ## Configuration
 
 Copy `config.example.yaml` to `config.yaml` and edit the targets:
