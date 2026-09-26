@@ -41,8 +41,8 @@ go run . -config ./config.yaml
 
 ```sh
 go test ./...
-go vet ./...
-test -z "$(gofmt -l .)"
+golangci-lint run
+golangci-lint fmt
 ```
 
 ## License
