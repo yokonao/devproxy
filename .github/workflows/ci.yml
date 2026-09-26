@@ -22,8 +22,6 @@ jobs:
           go-version-file: go.mod
       - run: go build ./...
       - run: go test ./... -race
-      - run: go vet ./...
-      - run: test -z "$(gofmt -l .)"
 
   lint:
     runs-on: ubuntu-latest
