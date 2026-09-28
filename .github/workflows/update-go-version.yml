@@ -24,7 +24,6 @@ jobs:
       - run: |
           version=$(go env GOVERSION | sed 's/^go//')
           go mod edit -go="$version"
-          sed -i "s/^go = .*/go = \"$version\"/" mise.toml
           branch="update-go-$version"
           git diff --quiet && exit 0
           git ls-remote --exit-code --heads origin "$branch" && exit 0

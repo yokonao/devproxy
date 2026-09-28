@@ -21,6 +21,9 @@ const (
 	shutdownTimeout   = 10 * time.Second
 )
 
+// version is set at build time via -ldflags "-X main.version=...".
+var version = "dev"
+
 func newServer(cfg *Config, handler http.Handler) *http.Server {
 	return &http.Server{
 		Addr:              fmt.Sprintf("127.0.0.1:%d", cfg.Port),
@@ -40,7 +43,13 @@ func shutdownServer(srv *http.Server, timeout time.Duration) error {
 
 func run() error {
 	configPath := flag.String("config", defaultConfigPath(), "path to the YAML config file")
+	showVersion := flag.Bool("version", false, "print the version and exit")
 	flag.Parse()
+
+	if *showVersion {
+		fmt.Println(version)
+		return nil
+	}
 
 	cfg, err := loadConfig(*configPath)
 	if err != nil {
