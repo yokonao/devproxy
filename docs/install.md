@@ -45,7 +45,7 @@ mise verifies the [build provenance attestation](#verify-the-archive) automatica
 With Go 1.27.1 or later:
 
 ```sh
-go install github.com/yokonao/devproxy@latest
+go install github.com/yokonao/devproxy/cmd/devproxy@latest
 ```
 
 The binary lands in `$(go env GOBIN)`, or `~/go/bin` when that is unset.

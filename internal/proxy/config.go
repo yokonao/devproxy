@@ -1,4 +1,4 @@
-package main
+package proxy
 
 import (
 	"fmt"
@@ -15,7 +15,7 @@ type Config struct {
 	Root   string            `yaml:"root"`
 }
 
-func defaultConfigPath() string {
+func DefaultConfigPath() string {
 	dir, err := os.UserConfigDir()
 	if err != nil {
 		return "config.yaml"
@@ -23,7 +23,7 @@ func defaultConfigPath() string {
 	return filepath.Join(dir, "devproxy", "config.yaml")
 }
 
-func loadConfig(path string) (*Config, error) {
+func LoadConfig(path string) (*Config, error) {
 	data, err := os.ReadFile(path)
 	if err != nil {
 		return nil, err

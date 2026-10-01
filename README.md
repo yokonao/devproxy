@@ -26,7 +26,7 @@ Route names may contain lowercase ASCII letters, digits, and interior hyphens. R
 Start the proxy:
 
 ```sh
-go run . -config ./config.yaml
+go run ./cmd/devproxy --config ./config.yaml
 ```
 
 ## Security boundaries

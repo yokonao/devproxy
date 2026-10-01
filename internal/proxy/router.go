@@ -1,4 +1,4 @@
-package main
+package proxy
 
 import (
 	"errors"
@@ -11,12 +11,12 @@ import (
 	"time"
 )
 
-type router struct {
+type Router struct {
 	proxies map[string]*httputil.ReverseProxy
 	root    *httputil.ReverseProxy
 }
 
-func newRouter(cfg *Config) (*router, error) {
+func NewRouter(cfg *Config) (*Router, error) {
 	if cfg.Root == "" {
 		return nil, errors.New("config: root is required")
 	}
@@ -37,7 +37,7 @@ func newRouter(cfg *Config) (*router, error) {
 		proxies[name] = buildProxy(t)
 	}
 
-	return &router{proxies: proxies, root: buildProxy(rootTarget)}, nil
+	return &Router{proxies: proxies, root: buildProxy(rootTarget)}, nil
 }
 
 func validRouteName(name string) bool {
@@ -52,7 +52,7 @@ func validRouteName(name string) bool {
 	return true
 }
 
-func (rt *router) route(host string) (*httputil.ReverseProxy, string) {
+func (rt *Router) route(host string) (*httputil.ReverseProxy, string) {
 	hostname := host
 	if parsed, _, err := net.SplitHostPort(host); err == nil {
 		hostname = parsed
@@ -85,7 +85,7 @@ func (s *statusRecorder) WriteHeader(code int) {
 	s.ResponseWriter.WriteHeader(code)
 }
 
-func (rt *router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (rt *Router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
 	proxy, route := rt.route(r.Host)
 	rec := &statusRecorder{ResponseWriter: w, status: http.StatusOK}
@@ -105,4 +105,9 @@ func (rt *router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		"remote", r.RemoteAddr,
 		"duration", time.Since(start),
 	)
+}
+
+// Len returns the number of configured routes.
+func (rt *Router) Len() int {
+	return len(rt.proxies)
 }

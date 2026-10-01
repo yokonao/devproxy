@@ -4,7 +4,12 @@
 
 ### Added
 
-- `-version` prints the version.
+- `--version` prints the version.
+
+### Changed
+
+- Flags take two dashes: `-config` is now `--config`.
+- `go install` takes `github.com/yokonao/devproxy/cmd/devproxy@latest`.
 
 ## v0.1.2 - 2026-09-26
 
