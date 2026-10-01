@@ -1,4 +1,4 @@
-package main
+package proxy
 
 import (
 	"os"
@@ -12,7 +12,7 @@ import (
 func TestLoadConfig(t *testing.T) {
 	t.Run("valid", func(t *testing.T) {
 		path := writeConfig(t, "port: 3000\nroot: http://127.0.0.1:8080\nroutes:\n  api: http://127.0.0.1:8081\n")
-		cfg, err := loadConfig(path)
+		cfg, err := LoadConfig(path)
 		require.NoError(t, err)
 		assert.Equal(t, 3000, cfg.Port)
 		assert.Equal(t, "http://127.0.0.1:8080", cfg.Root)
@@ -25,7 +25,7 @@ func TestLoadConfig(t *testing.T) {
 		"large port":    "port: 65536\nroot: http://127.0.0.1:8080\n",
 	} {
 		t.Run(name, func(t *testing.T) {
-			_, err := loadConfig(writeConfig(t, data))
+			_, err := LoadConfig(writeConfig(t, data))
 			assert.Error(t, err)
 		})
 	}

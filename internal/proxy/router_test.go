@@ -1,4 +1,4 @@
-package main
+package proxy
 
 import (
 	"testing"
@@ -9,12 +9,12 @@ import (
 
 func TestNewRouter(t *testing.T) {
 	t.Run("requires root", func(t *testing.T) {
-		_, err := newRouter(&Config{Routes: map[string]string{"a": "http://localhost:1"}})
+		_, err := NewRouter(&Config{Routes: map[string]string{"a": "http://localhost:1"}})
 		assert.Error(t, err)
 	})
 
 	t.Run("rejects bad route", func(t *testing.T) {
-		_, err := newRouter(&Config{
+		_, err := NewRouter(&Config{
 			Root:   "unix:///tmp/f.sock",
 			Routes: map[string]string{"a": "ftp://nope"},
 		})
@@ -23,7 +23,7 @@ func TestNewRouter(t *testing.T) {
 
 	t.Run("rejects invalid route name", func(t *testing.T) {
 		for _, name := range []string{"", "API", "api.example", "-api", "api-", "api_1"} {
-			_, err := newRouter(&Config{
+			_, err := NewRouter(&Config{
 				Root:   "http://localhost:8080",
 				Routes: map[string]string{name: "http://localhost:8081"},
 			})
@@ -33,7 +33,7 @@ func TestNewRouter(t *testing.T) {
 }
 
 func TestRoute(t *testing.T) {
-	rt, err := newRouter(&Config{
+	rt, err := NewRouter(&Config{
 		Port: 3000,
 		Root: "unix:///tmp/root.sock",
 		Routes: map[string]string{

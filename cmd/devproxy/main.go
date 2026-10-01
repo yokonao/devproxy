@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"errors"
-	"flag"
 	"fmt"
 	"log/slog"
 	"net/http"
@@ -11,6 +10,9 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
+
+	"github.com/spf13/cobra"
+	"github.com/yokonao/devproxy/internal/proxy"
 )
 
 const (
@@ -24,7 +26,7 @@ const (
 // version is set at build time via -ldflags "-X main.version=...".
 var version = "dev"
 
-func newServer(cfg *Config, handler http.Handler) *http.Server {
+func newServer(cfg *proxy.Config, handler http.Handler) *http.Server {
 	return &http.Server{
 		Addr:              fmt.Sprintf("127.0.0.1:%d", cfg.Port),
 		Handler:           handler,
@@ -41,33 +43,41 @@ func shutdownServer(srv *http.Server, timeout time.Duration) error {
 	return srv.Shutdown(ctx)
 }
 
-func run() error {
-	configPath := flag.String("config", defaultConfigPath(), "path to the YAML config file")
-	showVersion := flag.Bool("version", false, "print the version and exit")
-	flag.Parse()
+func newRootCmd() *cobra.Command {
+	var configPath string
 
-	if *showVersion {
-		fmt.Println(version)
-		return nil
+	cmd := &cobra.Command{
+		Use:           "devproxy",
+		Short:         "Route local development traffic by hostname",
+		Version:       version,
+		Args:          cobra.NoArgs,
+		SilenceUsage:  true,
+		SilenceErrors: true,
+		RunE: func(cmd *cobra.Command, _ []string) error {
+			return run(cmd.Context(), configPath)
+		},
 	}
+	cmd.CompletionOptions.DisableDefaultCmd = true
+	cmd.Flags().StringVar(&configPath, "config", proxy.DefaultConfigPath(), "path to the YAML config file")
 
-	cfg, err := loadConfig(*configPath)
+	return cmd
+}
+
+func run(ctx context.Context, configPath string) error {
+	cfg, err := proxy.LoadConfig(configPath)
 	if err != nil {
 		return err
 	}
-	rt, err := newRouter(cfg)
+	rt, err := proxy.NewRouter(cfg)
 	if err != nil {
 		return err
 	}
 
 	srv := newServer(cfg, rt)
 
-	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
-	defer stop()
-
 	errCh := make(chan error, 1)
 	go func() {
-		slog.Info("starting devproxy", "addr", srv.Addr, "routes", len(rt.proxies))
+		slog.Info("starting devproxy", "addr", srv.Addr, "routes", rt.Len())
 		if err := srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 			errCh <- err
 		}
@@ -83,7 +93,10 @@ func run() error {
 }
 
 func main() {
-	if err := run(); err != nil {
+	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
+	defer stop()
+
+	if err := newRootCmd().ExecuteContext(ctx); err != nil {
 		slog.Error("fatal", "error", err)
 		os.Exit(1)
 	}
