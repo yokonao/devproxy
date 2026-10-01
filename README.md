@@ -2,9 +2,12 @@
 
 `devproxy` is a small reverse proxy for local development. It listens on the loopback interface and selects a configured upstream from `<route>.localhost`.
 
-## Installation
+## Install
 
-See [docs/install.md](docs/install.md).
+Download a prebuilt binary from [GitHub Releases](https://github.com/yokonao/devproxy/releases).
+Every release ships with a build provenance attestation.
+
+See [docs/install.md](docs/install.md) for other install methods and how to verify a release.
 
 ## Configuration
 
