@@ -47,7 +47,3 @@ go test ./...
 golangci-lint run
 golangci-lint fmt
 ```
-
-## License
-
-MIT
