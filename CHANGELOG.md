@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.2.1 - 2026-10-23
+
+### Security
+
+- Built with Go 1.27.3, whose `crypto/x509` rejects the eMudhra intermediate CAs with weak private keys when verifying HTTPS upstreams.
+
 ## v0.2.0 - 2026-10-02
 
 ### Added
