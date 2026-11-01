@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Changed
+
+- The default config path is `$XDG_CONFIG_HOME/devproxy/config.yaml`, falling back to `~/.config/devproxy/config.yaml`. On macOS it was `~/Library/Application Support/devproxy/config.yaml`; move the file there or pass `--config`.
+
 ## v0.2.1 - 2026-10-23
 
 ### Security
