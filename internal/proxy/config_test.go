@@ -31,6 +31,19 @@ func TestLoadConfig(t *testing.T) {
 	}
 }
 
+func TestDefaultConfigPath(t *testing.T) {
+	t.Run("XDG_CONFIG_HOME", func(t *testing.T) {
+		t.Setenv("XDG_CONFIG_HOME", "/xdg")
+		assert.Equal(t, filepath.Join("/xdg", "devproxy", "config.yaml"), DefaultConfigPath())
+	})
+
+	t.Run("home fallback", func(t *testing.T) {
+		t.Setenv("XDG_CONFIG_HOME", "")
+		t.Setenv("HOME", "/home/me")
+		assert.Equal(t, filepath.Join("/home/me", ".config", "devproxy", "config.yaml"), DefaultConfigPath())
+	})
+}
+
 func writeConfig(t *testing.T, data string) string {
 	t.Helper()
 	path := filepath.Join(t.TempDir(), "config.yaml")

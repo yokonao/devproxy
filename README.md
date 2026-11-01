@@ -11,7 +11,7 @@ See [docs/install.md](docs/install.md) for other install methods and how to veri
 
 ## Configuration
 
-Copy `config.example.yaml` to `config.yaml` and edit the targets:
+devproxy reads `$XDG_CONFIG_HOME/devproxy/config.yaml` (default `~/.config/devproxy/config.yaml`); `--config` overrides the path. Copy `config.example.yaml` there and edit the targets:
 
 ```yaml
 port: 3000

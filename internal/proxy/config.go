@@ -15,10 +15,15 @@ type Config struct {
 	Root   string            `yaml:"root"`
 }
 
+// DefaultConfigPath returns $XDG_CONFIG_HOME/devproxy/config.yaml, falling back to ~/.config.
 func DefaultConfigPath() string {
-	dir, err := os.UserConfigDir()
-	if err != nil {
-		return "config.yaml"
+	dir := os.Getenv("XDG_CONFIG_HOME")
+	if dir == "" {
+		home, err := os.UserHomeDir()
+		if err != nil {
+			return "config.yaml"
+		}
+		dir = filepath.Join(home, ".config")
 	}
 	return filepath.Join(dir, "devproxy", "config.yaml")
 }
